@@ -1,0 +1,197 @@
+<!doctype html>
+<html>
+  <head>
+    <title>React Native Slider: Smooth and snappy // Jarred Witt</title>
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.53" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="John Doe" />
+    <meta name="description" content="" />
+    <base href="http://example.org/" />
+    <link rel="stylesheet" href="http://example.org/css/main.min.0e6d2abf00424f96941928ea0349d86fb583ffed169e5cabbe64e48e37566999.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="/"><img class="app-header-avatar" src="https://avatars2.githubusercontent.com/u/5090577?s=400&amp;u=8dc92f58e79650c4ef09ac686381200ca04e4816&amp;v=4" /></a>
+      <h1>Jarred Witt</h1>
+      <h5>Software Developer | Entrepreneur</h5>
+      <p>I&#39;m a fullstack software developer with experience building complex applications with teams from around the world.</p>
+      <p>Seattle, WA</p>
+      <div class="app-header-social">
+        
+          <a target="_blank" href="https://github.com/jarredwitt"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">React Native Slider: Smooth and snappy</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          Feb 2, 2019
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          4 min read
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+          <a class="tag" href="http://example.org/tags/react/">react</a><a class="tag" href="http://example.org/tags/react-native/">react-native</a></div>
+      </div>
+    </header>
+    <div class="post-content">
+      
+
+<h2 id="tldr">TLDR</h2>
+
+<p>Make a stepped slider component provide immediate visual feedback by utilizing <code>onSlidingComplete</code>, <code>Math.round</code> and <code>setNativeProps</code>.</p>
+
+<h2 id="introduction">Introduction</h2>
+
+<p>While working on a React Native project that utilized a Slider component we received some feedback that the Slider didn&rsquo;t feel very smooth. For some background, the Slider displayed 3 different values that a user could choose from and the goal was to only allow these three values as a possible selection on the slider. This meant that we had to lock the Slider down using the step property. Here&rsquo;s a simplified version of the configuration:</p>
+
+<pre><code>&lt;Slider
+  minimumValue={1}
+  maximumValue={3}
+  step={1}
+  onSlidingComplete={this.onSlidingComplete}
+/&gt;
+</code></pre>
+
+<p>Which when shown in an Expo snack renders the following:</p>
+
+<p><img src="blog/posts/react-native-slider-smooth-snappy/images/slider-pre-snap.gif" alt="slider gif" /></p>
+
+<p>As you can see the Slider is displaying correctly and we have locked down our possible values to only to a specific range using the minimumValue, maximumValue, and step properties. There&rsquo;s a UX issue with this setup though - the user is not provided with immediate visual feedback that the slider is moving until they get about half between the current value and the next. Now sure if we used a bigger range and a smaller step we could alleviate this issue, but that doesn&rsquo;t allow us to keep our possible values to the initial 3 that we wanted. The step property is what&rsquo;s causing our slider to not report immediate visual feedback. If we remove the step property the slider shows immediate feedback upon moving, but that causes our value to fall out of line with the 3 values that we&rsquo;re looking for. Here&rsquo;s what we get after removing the step property:</p>
+
+<p><img src="blog/posts/react-native-slider-smooth-snappy/images/slider-post-snap.gif" alt="slider gif" /></p>
+
+<p>As you can see our slider&rsquo;s value isn&rsquo;t one of the 3 values we&rsquo;re looking for and even worse our Slider no longer snaps to one of the three values.</p>
+
+<p>At first glance the solution should have been fairly quick (and the final one still is): Just utilize the <code>onSlidingComplete</code> callback and a value state prop to set the value of the Slider. To get the value to snap correctly we set the state value based on <code>Math.round</code>. So now we have the following code:</p>
+
+<pre><code>onSlidingComplete = (v) =&gt; {
+  const rounded = Math.round(v);
+  this.setState({sliderValue: rounded});
+}
+
+render() {
+  const {sliderValue} = this.state;
+
+  ...
+
+  &lt;Slider
+    minimumValue={1}
+    maximumValue={3}
+    step={1}
+    onSlidingComplete={this.onSlidingComplete}
+    value={sliderValue}
+  /&gt;
+
+  ...
+}
+</code></pre>
+
+<p>Well it didn&rsquo;t work, but it didn&rsquo;t fail completely. Our value is actually snapping to one of our values, but our Slider isn&rsquo;t really honoring the rounded value. It&rsquo;s snapping to a value some of the time, but not all of the time. Looking at the documentation for the Slider a little closer we see that the value prop is only used for setting the initial value. The Slider in the end is an uncontrolled component and we can only get values reported back to us.</p>
+
+<p>This is where <code>setNativeProps</code> comes in. Since we can set the value through our state we need to set the value directly by accessing the native value prop of the Slider. Luckily working with <code>setNativeProps</code> is really easy. All we have to is add a reference to our component and then call <code>setNativeProps</code> in our <code>onSlidingComplete</code> method. Here&rsquo;s what we have now:</p>
+
+<pre><code>onSlidingComplete = (v) =&gt; {
+  const rounded = Math.round(v);
+  this.setState({sliderValue: rounded});
+  this.slider.setNativeProps({value: rounded});
+}
+
+render() {
+  const {sliderValue} = this.state;
+
+  ...
+
+  &lt;Slider
+    ref={(c) =&gt; this.slider = c}
+    minimumValue={1}
+    maximumValue={3}
+    step={1}
+    onSlidingComplete={this.onSlidingComplete}
+    value={sliderValue}
+  /&gt;
+
+  ...
+}
+</code></pre>
+
+<p>And here&rsquo;s our result:</p>
+
+<p><img src="blog/posts/react-native-slider-smooth-snappy/images/slider-set-native.gif" alt="slider gif" /></p>
+
+<p>Perfect! Our use gets immediate feedback that the Slider is moving and we get the satisfaction that the value will always be one of the 3 possible values we want.</p>
+
+<p>Here&rsquo;s our complete code for this example from the following <a href="https://snack.expo.io/B1cofYqm4">Expo snack</a>:</p>
+
+<pre><code>import React, {PureComponent} from 'react';
+import { Text, View, Slider, StyleSheet } from 'react-native';
+
+export default class App extends PureComponent {
+  state = {
+    sliderValue: 1,
+  }
+
+  onSlidingComplete = (v) =&gt; {
+    const rounded = Math.round(v);
+
+    this.setState({sliderValue: rounded});
+    this.slider.setNativeProps({value: rounded});
+  }
+
+  render() {
+    const {sliderValue} = this.state;
+
+    return (
+      &lt;View style={styles.container}&gt;
+        &lt;Text&gt;Choose a value&lt;/Text&gt;
+        &lt;Slider
+          ref={(c) =&gt; this.slider = c}
+          minimumValue={1}
+          maximumValue={3}
+          onSlidingComplete={this.onSlidingComplete}
+          value={sliderValue}
+        /&gt;
+        &lt;View style={styles.values}&gt;
+          &lt;Text&gt;1&lt;/Text&gt;
+          &lt;Text&gt;2&lt;/Text&gt;
+          &lt;Text&gt;3&lt;/Text&gt;
+        &lt;/View&gt;
+        &lt;Text&gt;{`Slider Value: ${sliderValue}`}&lt;/Text&gt;
+      &lt;/View&gt;
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    padding: 25,
+  },
+  values: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 12,
+  }
+});
+</code></pre>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>In the end by using <code>setNativeProps</code> we were able to solve the issue without adding another dependency to the project. There was several solutions out there that were more than capable of solving the issue, but I didn&rsquo;t really think this justified the additional library and bundle bloat.</p>
+
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>
