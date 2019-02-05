@@ -17,7 +17,7 @@
       <pubDate>Sat, 02 Feb 2019 00:00:00 +0000</pubDate>
       
       <guid>https://jarredwitt.com/blog/posts/react-native-slider-smooth-snappy/</guid>
-      <description>TLDR Make a stepped slider component provide immediate visual feedback by utilizing onSlidingComplete, Math.round and setNativeProps.
+      <description>TLDR Make a stepped Slider component provide immediate visual feedback by utilizing onSlidingComplete, Math.round and setNativeProps.
 Introduction While working on a React Native project that utilized a Slider component we received some feedback that the Slider didn&amp;rsquo;t feel very smooth. For some background, the Slider displayed 3 different values that a user could choose from and the goal was to only allow these three values as a possible selection on the slider.</description>
     </item>
     

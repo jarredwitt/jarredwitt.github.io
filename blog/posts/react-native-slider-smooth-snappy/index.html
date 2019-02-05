@@ -8,14 +8,15 @@
     <meta name="author" content="John Doe" />
     <meta name="description" content="" />
     <base href="https://jarredwitt.com" />
-    <link rel="stylesheet" href="https://jarredwitt.com/css/main.min.0e6d2abf00424f96941928ea0349d86fb583ffed169e5cabbe64e48e37566999.css" />
+    <link rel="stylesheet" href="https://jarredwitt.com/css/main.min.9f70fdb69d4ddd50689bbc31c8f9f1a9b2afa905374a87f0d57b255a3685e9ad.css" />
+    <link rel="stylesheet" href="https://jarredwitt.com/css/prism.min.ebb8f50c06b209a60743baa0f00a656c88e635a9d9965eda694a0ac10c7e5a4e.css" />
   </head>
   <body>
     <header class="app-header">
       <a href="/"><img class="app-header-avatar" src="https://avatars2.githubusercontent.com/u/5090577?s=400&amp;u=8dc92f58e79650c4ef09ac686381200ca04e4816&amp;v=4" /></a>
       <h1>Jarred Witt</h1>
-      <h5>Software Developer | Entrepreneur</h5>
-      <p>I&#39;m a fullstack software developer with experience building complex applications with teams from around the world.</p>
+      <h5>Developer | Entrepreneur</h5>
+      <p>I&#39;m a fullstack developer with experience building complex applications with teams from around the world.</p>
       <p>Seattle, WA</p>
       <div class="app-header-social">
         
@@ -47,13 +48,13 @@
 
 <h2 id="tldr">TLDR</h2>
 
-<p>Make a stepped slider component provide immediate visual feedback by utilizing <code>onSlidingComplete</code>, <code>Math.round</code> and <code>setNativeProps</code>.</p>
+<p>Make a stepped Slider component provide immediate visual feedback by utilizing <code>onSlidingComplete</code>, <code>Math.round</code> and <code>setNativeProps</code>.</p>
 
 <h2 id="introduction">Introduction</h2>
 
 <p>While working on a React Native project that utilized a Slider component we received some feedback that the Slider didn&rsquo;t feel very smooth. For some background, the Slider displayed 3 different values that a user could choose from and the goal was to only allow these three values as a possible selection on the slider. This meant that we had to lock the Slider down using the step property. Here&rsquo;s a simplified version of the configuration:</p>
 
-<pre><code>&lt;Slider
+<pre><code class="language-jsx">&lt;Slider
   minimumValue={1}
   maximumValue={3}
   step={1}
@@ -73,7 +74,7 @@
 
 <p>At first glance the solution should have been fairly quick (and the final one still is): Just utilize the <code>onSlidingComplete</code> callback and a value state prop to set the value of the Slider. To get the value to snap correctly we set the state value based on <code>Math.round</code>. So now we have the following code:</p>
 
-<pre><code>onSlidingComplete = (v) =&gt; {
+<pre><code class="language-jsx">onSlidingComplete = (v) =&gt; {
   const rounded = Math.round(v);
   this.setState({sliderValue: rounded});
 }
@@ -99,7 +100,7 @@ render() {
 
 <p>This is where <code>setNativeProps</code> comes in. Since we can set the value through our state we need to set the value directly by accessing the native value prop of the Slider. Luckily working with <code>setNativeProps</code> is really easy. All we have to is add a reference to our component and then call <code>setNativeProps</code> in our <code>onSlidingComplete</code> method. Here&rsquo;s what we have now:</p>
 
-<pre><code>onSlidingComplete = (v) =&gt; {
+<pre><code class="language-jsx">onSlidingComplete = (v) =&gt; {
   const rounded = Math.round(v);
   this.setState({sliderValue: rounded});
   this.slider.setNativeProps({value: rounded});
@@ -127,11 +128,11 @@ render() {
 
 <p><img src="blog/posts/react-native-slider-smooth-snappy/images/slider-set-native.gif" alt="slider gif" /></p>
 
-<p>Perfect! Our use gets immediate feedback that the Slider is moving and we get the satisfaction that the value will always be one of the 3 possible values we want.</p>
+<p>Perfect! Our user gets immediate feedback that the Slider is moving and we get the satisfaction that the value will always be one of the 3 possible values we want.</p>
 
 <p>Here&rsquo;s our complete code for this example from the following <a href="https://snack.expo.io/rJYp1CXEN">Expo snack</a>:</p>
 
-<pre><code>import React, {PureComponent} from 'react';
+<pre><code class="language-jsx">import React, {PureComponent} from 'react';
 import { Text, View, Slider, StyleSheet } from 'react-native';
 
 export default class App extends PureComponent {
@@ -193,5 +194,6 @@ const styles = StyleSheet.create({
   </article>
 
     </main>
+    <script type="text/javascript" src="/js/prism.js"></script>
   </body>
 </html>
